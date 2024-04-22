@@ -1,0 +1,8 @@
+.plentiful-block {
+  display: flex;
+  gap: 2em;
+  flex-wrap: wrap;
+  /* align-items: center; */
+  /* justify-content: center; */
+  width: calc(100% - 2em);
+}

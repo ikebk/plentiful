@@ -1,0 +1,4 @@
+plentiful-users:
+  css:
+    theme:
+      css/style.css: {}

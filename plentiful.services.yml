@@ -1,0 +1,7 @@
+parameters:
+  reqres.base_url: 'https://reqres.in'
+
+services:
+  plentiful.api_client:
+    class: Drupal\plentiful\ReqresApiClient
+    arguments: ['@http_client_factory', '%reqres.base_url%', '@logger.channel.default']

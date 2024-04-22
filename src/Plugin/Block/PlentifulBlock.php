@@ -7,7 +7,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\plentiful\PlentifulApiClientInterface;
+use Drupal\plentiful\PlentifulApiClientInterface as ApiInterface;
 use Psr\Log\LoggerInterface;
 use Drupal\Core\Access\AccessResult;
 
@@ -23,7 +23,7 @@ class PlentifulBlock extends BlockBase implements ContainerFactoryPluginInterfac
   /**
    * The API client service.
    *
-   * @var \Drupal\plentiful\PlentifulApiClientInterface
+   * @var \Drupal\plentiful\ApiInterface
    */
   protected $apiClient;
 
@@ -36,10 +36,10 @@ class PlentifulBlock extends BlockBase implements ContainerFactoryPluginInterfac
    *   The plugin_id for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
-   * @param \Drupal\plentiful\PlentifulApiClientInterface $api_client
+   * @param \Drupal\plentiful\ApiInterface $api_client
    *   The API client service.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, PlentifulApiClientInterface $api_client) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ApiInterface $api_client) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->apiClient = $api_client;
   }
@@ -64,7 +64,7 @@ class PlentifulBlock extends BlockBase implements ContainerFactoryPluginInterfac
     $results = $this->apiClient
                     ->makeApiCall('api/users', ['page' => 1],$config['plt_items_per_page'])
                     ->getUsers();
-                    
+
     return [
       '#theme' => 'plentiful_list',
       '#results' => $results,
@@ -87,23 +87,13 @@ class PlentifulBlock extends BlockBase implements ContainerFactoryPluginInterfac
   public function blockForm($form, FormStateInterface $form_state) {
     $form = parent::blockForm($form, $form_state);
     $config = $this->getConfiguration();
-    // $form['plentiful'] = [
-    //   '#type' => 'details',
-    //   '#title' => $this->t('Plentiful'),
-    //   '#tree' => TRUE,
-    //   '#group' => 'visibility_tabs',
-    //   '#parents' => ['visibility_tabs'],
-    // ];
 
-    
     $form['plt_items_per_page'] = [
       '#type' => 'number',
       '#title' => $this->t('Items/page'),
       '#description' => $this->t('Number of items per page.'),
       '#default_value' => isset($config['plt_items_per_page']) ? $config['plt_items_per_page'] : 1,
       '#maxlength' => 3,
-      // '#group' => 'plentiful',
-      // '#parents' => ['plentiful'],
     ];
     
     $form['plt_email_label'] = [
@@ -111,7 +101,6 @@ class PlentifulBlock extends BlockBase implements ContainerFactoryPluginInterfac
       '#title' => $this->t('Email label'),
       '#description' => $this->t('Email label.'),
       '#default_value' => isset($config['plt_email_label']) ? $config['plt_email_label'] : 'Email',
-      // '#group' => 'verticaltabs',
     ];
     
     $form['plt_forename_label'] = [
@@ -119,7 +108,6 @@ class PlentifulBlock extends BlockBase implements ContainerFactoryPluginInterfac
       '#title' => $this->t('Forename label'),
       '#description' => $this->t('Forename label.'),
       '#default_value' => isset($config['plt_forename_label']) ? $config['plt_forename_label'] : 'Forename',
-      // '#group' => 'verticaltabs',
     ];
     
     $form['plt_surname_label'] = [
@@ -127,7 +115,6 @@ class PlentifulBlock extends BlockBase implements ContainerFactoryPluginInterfac
       '#title' => $this->t('Surname label'),
       '#description' => $this->t('Surname label.'),
       '#default_value' => isset($config['plt_surname_label']) ? $config['plt_surname_label'] : 'Surname',
-      // '#group' => 'verticaltabs',
     ];
 
     return $form;

@@ -88,7 +88,13 @@ class PlentifulBlock extends BlockBase implements ContainerFactoryPluginInterfac
     $form = parent::blockForm($form, $form_state);
     $config = $this->getConfiguration();
 
-    $form['plt_items_per_page'] = [
+    $form['plentiful'] = [
+      '#type' => 'details',
+      '#title' => t('Plentiful Settings'),
+      '#open' => TRUE,
+    ];
+
+    $form['plentiful']['plt_items_per_page'] = [
       '#type' => 'number',
       '#title' => $this->t('Items/page'),
       '#description' => $this->t('Number of items per page.'),
@@ -96,21 +102,21 @@ class PlentifulBlock extends BlockBase implements ContainerFactoryPluginInterfac
       '#maxlength' => 3,
     ];
     
-    $form['plt_email_label'] = [
+    $form['plentiful']['plt_email_label'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Email label'),
       '#description' => $this->t('Email label.'),
       '#default_value' => isset($config['plt_email_label']) ? $config['plt_email_label'] : 'Email',
     ];
     
-    $form['plt_forename_label'] = [
+    $form['plentiful']['plt_forename_label'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Forename label'),
       '#description' => $this->t('Forename label.'),
       '#default_value' => isset($config['plt_forename_label']) ? $config['plt_forename_label'] : 'Forename',
     ];
     
-    $form['plt_surname_label'] = [
+    $form['plentiful']['plt_surname_label'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Surname label'),
       '#description' => $this->t('Surname label.'),
@@ -126,11 +132,12 @@ class PlentifulBlock extends BlockBase implements ContainerFactoryPluginInterfac
   public function blockSubmit($form, FormStateInterface $form_state) {
     parent::blockSubmit($form, $form_state);
     $values = $form_state->getValues();
+    $results = $values['plentiful'];
 
-    $this->configuration['plt_items_per_page'] = ($values['plt_items_per_page'] <= 0)? 1 : $values['plt_items_per_page'];
-    $this->configuration['plt_email_label'] = $values['plt_email_label'];
-    $this->configuration['plt_forename_label'] = $values['plt_forename_label'];
-    $this->configuration['plt_surname_label'] = $values['plt_surname_label'];
+    $this->configuration['plt_items_per_page'] = ($results['plt_items_per_page'] <= 0)? 1 : $results['plt_items_per_page'];
+    $this->configuration['plt_email_label'] = $results['plt_email_label'];
+    $this->configuration['plt_forename_label'] = $results['plt_forename_label'];
+    $this->configuration['plt_surname_label'] = $results['plt_surname_label'];
   }
 
   /**

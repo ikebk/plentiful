@@ -3,6 +3,10 @@
     "description": "A module that provides a block, listing the users from a third party service(https://reqres.in).",
     "type": "drupal-module-custom",
     "license": "UNLICENSED",
+    "keywords": [
+        "Drupal",
+        "plentiful"
+    ],
     "autoload": {
         "psr-4": {
             "Ikebk\\Plentiful\\": "src/"
@@ -10,8 +14,8 @@
     },
     "authors": [
         {
-            "name": "Isaac Boakye",
-            "email": "ike@github.com"
+            "name": "Isaac",
+            "email": "ikebk@github.com"
         }
     ],
     "require": {}

@@ -18,10 +18,5 @@ function plentiful_theme($existing, $type, $theme, $path) {
  * Implements hook_form_alter().
  */
 function plentiful_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  if ($form_id === 'block_form') {
-      // echo '<pre>'. print_r(array_keys($form), 1) .'</pre>';
-      // echo '<pre>'. print_r(($form['visibility']), 1) .'</pre>';
-      // echo '<pre>'. print_r($form['settings'], 1) .'</pre>';
-    }
-    // echo '<pre>'. print_r($form_id, 1) .'</pre>';
+  // if ($form_id === 'block_form') {}
 }

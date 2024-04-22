@@ -1,13 +1,14 @@
 ## Installation:
 
 1. Update Drupal project's `composer.json` **repositories** field with the following:
-  `"repositories": [
-      {
-          "type": "vcs",
-          "url": "https://github.com/ikebk/plentiful.git"
-      }
-  ],`
-
+      ```
+      "repositories": [
+            {
+                "type": "vcs",
+                "url": "https://github.com/ikebk/plentiful.git"
+            }
+        ],
+      ```
 2. Run `composer update`.
 
 3. Run `drush en plentiful` if Drush is already installed or use the admin interface - navigate to */admin/modules* and search 'plentiful'.

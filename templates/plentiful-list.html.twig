@@ -1,11 +1,27 @@
 {# plentiful/templates/plentiful-list.html.twig #}
 
 <div class="plentiful-block">
-  {% for key,value in results %}
-    <div>
-      <div><a href="mailto:{{ value.email }}" title="{{ value.first_name }} {{ value.last_name }}">{{ value.first_name }} {{ value.last_name }}</a></div>
-      <div><img src="{{ value.avatar }}" alt="" /></div>
-      {{ dump(value) }}
-    </div>
-  {% endfor %}
+  <table>
+    <thead>
+      <tr>
+        <th>Id<th>
+        <th>{{ labels.label_email }}<th>
+        <th>{{ labels.label_forename }}<th>
+        <th>{{ labels.label_surname }}<th>
+        <th>Image<th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for index,value in results %}
+        <tr>
+          <td>#{{ (index + 1) }}</a><td>
+          <td><a href="mailto:{{ value.email }}" title="{{ value.first_name }} {{ value.last_name }}">{{ value.email }}</a><td>
+          <td>{{ value.first_name }}<td>
+          <td>{{ value.last_name }}<td>
+          <td><img src="{{ value.avatar }}" alt="" /><td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>

@@ -4,11 +4,10 @@ namespace Drupal\plentiful;
 use GuzzleHttp\Exception\RequestException;
 use Drupal\Core\Http\ClientFactory;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-// use Drupal\Core\Config\ConfigFactoryInterface;
-// use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\plentiful\PlentifulApiClientInterface;
-
+use Drupal\plentiful\Event\PlentifulEvent;
 
 class ReqresApiClient implements PlentifulApiClientInterface {
   /**
@@ -17,7 +16,6 @@ class ReqresApiClient implements PlentifulApiClientInterface {
    * @var \GuzzleHttp\ClientInterface
    */
   protected $httpClientFactory;
-
 
   /**
    * The base URL for the API.
@@ -39,22 +37,27 @@ class ReqresApiClient implements PlentifulApiClientInterface {
    */
   protected $results;
 
-  protected $counts;
+  /**
+   * @var 
+   */
+  protected $eventDispatcher;
 
   /**
-   * Constructs a new ApiClient object.
+   * Constructs a new ReqresApiClient object.
    *
    * @param \Drupal\Core\Http\ClientFactory $client_factory
-   *   The HTTP client factory.
+   * @param string $apiBaseUrl
+   * @param \Psr\Log\LoggerInterface $logger
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+   * 
    */
-  public function __construct(ClientFactory $client_factory, $apiBaseUrl, LoggerInterface $logger) {
+  public function __construct(ClientFactory $client_factory, $apiBaseUrl, LoggerInterface $logger, EventDispatcherInterface $eventDispatcher) {
     $this->httpClientFactory = $client_factory;
     $this->apiBaseUrl = $apiBaseUrl;
     $this->logger = $logger;
+    $this->eventDispatcher = $eventDispatcher;
     $this->results = [];
-    $this->counts = 0;
   }
-
 
   /**
    * Makes an API call.
@@ -67,19 +70,11 @@ class ReqresApiClient implements PlentifulApiClientInterface {
    *   The API response.
    */
   public function makeApiCall($endpoint, $query = [], $count = null) {
-    // $response = $this->httpClientFactory->fromOptions(
-    //   [
-    //     'base_uri' => 'https://reqres.in', 
-    //     'query' => ['page' => 2]
-    //   ]
-    // )->get('api/users');
-
     $sub_call = false;
     $options = [
       'base_uri' => $this->apiBaseUrl, 
       'query' => $query
     ];
-
     
     try {
       $response = $this->httpClientFactory->fromOptions($options)->get($endpoint);
@@ -94,7 +89,7 @@ class ReqresApiClient implements PlentifulApiClientInterface {
         if (count($this->results) === $results['total']) {
           $sub_call = false;
         }
-
+        // call subsequent pages base on limit settings in block config
         if ($sub_call) {
           $this->makeApiCall($endpoint, ['page' => ($query['page'] + 1)], $count);
         }
@@ -103,20 +98,18 @@ class ReqresApiClient implements PlentifulApiClientInterface {
           $this->results = array_slice($this->results, 0, $count);
         }
       }
-
-      // echo '<pre>'. print_r($results, 1) .'</pre>';
       return $this;
-
     } catch (RequestException $e) {
       $this->logger->error('API request failed with error: @error', ['@error' => $e->getMessage()]);
       return NULL;
     }
   }
 
-  public function getUsers($count = null): array {
-    if ($this->results) {
-      return $this->results;
-    }
-    return [];
+  public function getUsers(): array {
+    // Register and dispatch the event with the API response data
+    $event = new PlentifulEvent($this->results);
+    $this->eventDispatcher->dispatch('plentiful.api_response', $event);
+
+    return $this->results;
   }
 }

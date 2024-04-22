@@ -4,4 +4,13 @@ parameters:
 services:
   plentiful.api_client:
     class: Drupal\plentiful\ReqresApiClient
-    arguments: ['@http_client_factory', '%reqres.base_url%', '@logger.channel.default']
+    arguments: 
+      - '@http_client_factory'
+      - '%reqres.base_url%' 
+      - '@logger.channel.default'
+      - '@event_dispatcher'
+  
+  plentiful.api_response:
+    class: Drupal\plentiful\EventSubscriber\PlentifulEventSubscriber
+    tags:
+      - { name: event_subscriber }

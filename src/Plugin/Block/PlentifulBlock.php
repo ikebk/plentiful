@@ -62,14 +62,9 @@ class PlentifulBlock extends BlockBase implements ContainerFactoryPluginInterfac
   public function build() {
     $config = $this->getConfiguration();
     $results = $this->apiClient
-                    ->makeApiCall(
-                      'api/users', 
-                      ['page' => 1], 
-                      $config['plt_items_per_page']
-                    )->getUsers();
-
-    // Register api results event
-
+                    ->makeApiCall('api/users', ['page' => 1],$config['plt_items_per_page'])
+                    ->getUsers();
+                    
     return [
       '#theme' => 'plentiful_list',
       '#results' => $results,
@@ -105,7 +100,7 @@ class PlentifulBlock extends BlockBase implements ContainerFactoryPluginInterfac
       '#type' => 'number',
       '#title' => $this->t('Items/page'),
       '#description' => $this->t('Number of items per page.'),
-      '#default_value' => isset($config['plt_items_per_page']) ? $config['plt_items_per_page'] : -1,
+      '#default_value' => isset($config['plt_items_per_page']) ? $config['plt_items_per_page'] : 1,
       '#maxlength' => 3,
       // '#group' => 'plentiful',
       // '#parents' => ['plentiful'],
@@ -145,7 +140,7 @@ class PlentifulBlock extends BlockBase implements ContainerFactoryPluginInterfac
     parent::blockSubmit($form, $form_state);
     $values = $form_state->getValues();
 
-    $this->configuration['plt_items_per_page'] = $values['plt_items_per_page'];
+    $this->configuration['plt_items_per_page'] = ($values['plt_items_per_page'] <= 0)? 1 : $values['plt_items_per_page'];
     $this->configuration['plt_email_label'] = $values['plt_email_label'];
     $this->configuration['plt_forename_label'] = $values['plt_forename_label'];
     $this->configuration['plt_surname_label'] = $values['plt_surname_label'];

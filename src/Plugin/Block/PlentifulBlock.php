@@ -62,8 +62,11 @@ class PlentifulBlock extends BlockBase implements ContainerFactoryPluginInterfac
   public function build() {
     $config = $this->getConfiguration();
     $results = $this->apiClient
-                    ->makeApiCall('api/users', ['page' => 1], $config['plt_items_per_page'])
-                    ->getUsers();
+                    ->makeApiCall(
+                      'api/users', 
+                      ['page' => 1], 
+                      $config['plt_items_per_page']
+                    )->getUsers();
 
     // Register api results event
 

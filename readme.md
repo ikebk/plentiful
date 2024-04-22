@@ -15,7 +15,7 @@ A module that provides a block, listing the users from a third party service(htt
             }
         ],
       ```
-2. Run `composer update`.
+2. Run `composer require ikebk/plentiful`.
 
 3. Run `drush en plentiful` if Drush is already installed or use the admin interface - navigate to */admin/modules* and search 'plentiful'.
 

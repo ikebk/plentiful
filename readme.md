@@ -1,6 +1,6 @@
 # Plentiful
 
-A module that provides a block, listing the users from a third party service(https://reqres.in).
+A Drupal module that provides a block, listing the users from a third party service(https://reqres.in).
 
 ## Requirements
 - Drupal 9/10
